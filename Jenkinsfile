@@ -4,6 +4,8 @@ pipeline {
     environment {
         IMAGE_NAME = "salhianis20/todo-react-app"
         TAG = "latest"
+        SONARQUBE_ENV = 'SonarQube'
+        SONAR_PROJECT_KEY = 'ToDo-React-App'
     }
 
     stages {
@@ -11,6 +13,24 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 checkout scm
+            }
+        }
+
+        
+        stage('SonarQube Scan') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'SonarQube-ID', variable: 'jenkins')]) {
+                        withSonarQubeEnv("${env.SONARQUBE_ENV}") {
+                            sh """
+                                sonar-scanner \
+                                -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                                -Dsonar.sources=. \
+                                -Dsonar.token=${jenkins}
+                            """
+                        }
+                    }
+                }
             }
         }
 
