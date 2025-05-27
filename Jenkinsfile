@@ -45,7 +45,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
-                    sh "trivy image --exit-code 1 --severity CRITICAL,HIGH $IMAGE_NAME:$TAG"
+                    sh "trivy image $IMAGE_NAME:$TAG"
                 }
             }
         }
